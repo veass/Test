@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\LessonPlan;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -9,6 +10,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Lesson;
+use yii\web\View;
 
 class SiteController extends Controller
 {
@@ -77,7 +80,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->redirect('/lessons');
         }
 
         $model->password = '';
@@ -124,5 +127,33 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function actionLessons()
+    {
+        $model = Lesson::find()
+        ->with(['lessonPlans' => function ($query) {
+                $query->andWhere(['user_id' => Yii::$app->user->id]);
+            }
+        ])
+        ->asArray()
+        ->all();
+
+        return $this->render('lessons', [
+            'model' => $model,
+        ]);
+
+    }
+    public function actionLesson($id)
+    {
+        
+        $model = Lesson::findOne($id);
+
+        $this->getView()->registerJsFile('@web/js/scripts.js', ['position' => View::POS_END, 'type' => 'module'] );
+
+        return $this->render('lesson', [
+            'model' => $model,
+        ]);
+
     }
 }

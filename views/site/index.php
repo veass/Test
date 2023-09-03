@@ -2,10 +2,20 @@
 
 /** @var yii\web\View $this */
 
+use yii\helpers\Html;
+
 $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
-
+<h2>Страницы </h2>
+    <div style="display:flex; justify-content:space-between; width: 60%; margin: 1rem auto;">
+    <?php   echo Html::a('Уроки', ['lessons/'], [
+                'class' => 'btn btn-primary',
+                'data' => [
+                    'method' => 'GET',
+                ],
+    ]); ?>
+    </div>
     <div class="jumbotron text-center bg-transparent mt-5 mb-5">
         <h1 class="display-4">Congratulations!</h1>
 
